@@ -1,0 +1,98 @@
+version: "3"
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=***
+      - OPENVPN_PASSWORD=***
+      - SERVER_COUNTRIES=Canada,Switzerland,Iceland,Sweden
+      - PORT_FORWARD_ONLY=on
+    ports:
+      - 8112:8112
+      - 9696:9696
+      - 7878:7878
+      - 8989:8989
+      - 8787:8787
+      - 5055:5055
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=US/Eastern
+      - DELUGE_LOGLEVEL=error #optional
+    volumes:
+      - /shared/vms/deluge/config:/config
+      - /shared/vms/deluge/downloads:/downloads
+      - /shared/nas/media/Movies:/target/movies
+      - /shared/nas/media/Shows:/target/shows
+      - /shared/nas/media/Books:/target/books
+      - /shared/nas/media/Music:/target/music
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=US/Eastern
+    volumes:
+      - /shared/vms/prowlarr:/config
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=US/Eastern
+    volumes:
+      - /shared/vms/radarr:/config
+      - /shared/nas/media/Movies:/movies #optional
+      - /shared/vms/deluge/downloads:/downloads #optional
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=US/Eastern
+    volumes:
+      - /shared/vms/sonarr:/config
+      - /shared/nas/media/Shows:/tv #optional
+      - /shared/vms/deluge/downloads:/downloads #optional
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=US/Eastern
+    volumes:
+      - /shared/vms/readarr:/config
+      - /shared/nas/media/Books:/books #optional
+      - /shared/vms/deluge/downloads:/downloads #optional
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=US/Eastern
+      - PORT=5055 #optional
+    volumes:
+      - /shared/vms/jellyseerr:/app/config
+    restart: unless-stopped
+    network_mode: "service:gluetun"

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f compose.yml
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: wizarr
+  name: wizarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: wizarr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f compose.yml
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/wizarr-default: "true"
+        io.kompose.service: wizarr
+    spec:
+      containers:
+        - image: ghcr.io/wizarrrr/wizarr:latest
+          name: wizarr
+          ports:
+            - containerPort: 5690
+              hostPort: 5690
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data/database
+              name: wizarr-claim0
+      restartPolicy: Always
+      volumes:
+        - name: wizarr-claim0
+          persistentVolumeClaim:
+            claimName: wizarr-claim0
