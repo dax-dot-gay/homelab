@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f compose.yml
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: homepage
+  name: homepage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: homepage
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f compose.yml
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/homepage-default: "true"
+        io.kompose.service: homepage
+    spec:
+      containers:
+        - env:
+            - name: PGID
+              value: "0"
+            - name: PUID
+              value: "0"
+          image: ghcr.io/gethomepage/homepage:latest
+          name: homepage
+          ports:
+            - containerPort: 3000
+              hostPort: 3000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/config
+              name: homepage-claim0
+            - mountPath: /app/public/images
+              name: homepage-claim1
+      restartPolicy: Always
+      volumes:
+        - name: homepage-claim0
+          persistentVolumeClaim:
+            claimName: homepage-claim0
+        - name: homepage-claim1
+          persistentVolumeClaim:
+            claimName: homepage-claim1
