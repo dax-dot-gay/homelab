@@ -29,6 +29,8 @@ spec:
               value: "0"
             - name: PUID
               value: "0"
+            - name: LOG_LEVEL
+              value: "DEBUG"
           image: ghcr.io/gethomepage/homepage:latest
           name: homepage
           ports:

@@ -1,0 +1,12 @@
+services:
+  sftpgo:
+    image: drakkan/sftpgo:latest
+    container_name: sftpgo
+    user: root
+    volumes:
+      - /shared:/shared
+      - /config:/var/lib/sftpgo
+      - /data:/srv/sftpgo
+    ports:
+      - 8080:8080
+      - 2022:2022
