@@ -48,3 +48,7 @@ spec:
         - name: sftpgo-claim2
           persistentVolumeClaim:
             claimName: sftpgo-claim2
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0

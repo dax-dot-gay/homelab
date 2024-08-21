@@ -1,0 +1,9 @@
+services:
+    kavita:
+        image: jvmilazz0/kavita:latest
+        volumes:
+            - ./library:/library
+            - ./config:/kavita/config
+        ports:
+            - "5000:5000"
+        restart: unless-stopped
