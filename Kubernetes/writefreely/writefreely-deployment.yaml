@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f compose.yml
+    kompose.version: 1.34.0 (HEAD)
+  labels:
+    io.kompose.service: writefreely
+  name: writefreely
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: writefreely
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f compose.yml
+        kompose.version: 1.34.0 (HEAD)
+      labels:
+        io.kompose.service: writefreely
+    spec:
+      containers:
+        - env:
+            - name: WRITEFREELY_ADMIN_PASSWORD
+              value: "CHANGE"
+            - name: WRITEFREELY_ADMIN_USER
+              value: "CHANGE"
+            - name: WRITEFREELY_FEDERATION
+              value: "true"
+            - name: WRITEFREELY_PUBLIC_STATS
+              value: "true"
+            - name: WRITEFREELY_SITE_NAME
+              value: Whispers
+            - name: WRITEFREELY_USER_INVITES
+              value: admin
+          image: algernon/writefreely:latest
+          name: writefreely
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data
+              name: writefreely-claim0
+      restartPolicy: Always
+      volumes:
+        - name: writefreely-claim0
+          persistentVolumeClaim:
+            claimName: writefreely-claim0
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
