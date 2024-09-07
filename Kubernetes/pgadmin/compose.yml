@@ -1,0 +1,12 @@
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: me@dax.gay
+      PGADMIN_DEFAULT_PASSWORD: "sAZwb@2StuL`&J"
+    volumes:
+      - /shared/containers/pgadmin:/var/lib/pgadmin
