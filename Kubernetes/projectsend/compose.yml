@@ -1,0 +1,16 @@
+---
+services:
+  projectsend:
+    image: lscr.io/linuxserver/projectsend:latest
+    container_name: projectsend
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=US/Eastern
+      - MAX_UPLOAD=5000
+    volumes:
+      - ./config:/config
+      - ./data:/data
+    ports:
+      - 80:80
+    restart: unless-stopped
