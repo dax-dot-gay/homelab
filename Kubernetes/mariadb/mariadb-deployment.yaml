@@ -26,6 +26,12 @@ spec:
         - env:
             - name: MYSQL_ROOT_PASSWORD
               value: '`R&@4NTupQxFY~nnwRnUnMd7'
+            - name: MYSQL_DATABASE
+              value: projectsend
+            - name: MYSQL_USER
+              value: projectsend
+            - name: MYSQL_PASSWORD
+              value: '`R&@4NTupQxFY~nnwRnUnMd7'
             - name: PGID
               value: "1000"
             - name: PUID
