@@ -1,0 +1,52 @@
+esphome:
+  name: monitoring-test
+
+esp32:
+  board: adafruit_qtpy_esp32s3_nopsram
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  - platform: esphome
+    password: ""
+
+wifi:
+  ssid: "Cottage of Queer"
+  password: "th3gaycottage"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Monitoring-Test Fallback Hotspot"
+    password: "EO9fi5eBgNQc"
+
+  manual_ip:
+    static_ip: 192.168.0.93
+    gateway: 192.168.0.1
+    subnet: 255.255.255.0
+
+captive_portal:
+  
+pca9554:
+- id: 'multiplexer'
+  address: 0x70
+  pin_count: 4
+
+i2c:
+  sda: GPIO41
+  scl: GPIO40
+  scan: true
+  id: qwiic
+
+sensor:
+  - platform: htu31d
+    temperature:
+      name: "Temperature"
+    humidity:
+      name: "Humidity"
