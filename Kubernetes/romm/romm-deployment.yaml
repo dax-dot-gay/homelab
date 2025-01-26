@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f compose.yaml
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: romm
+  name: romm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: romm
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f compose.yaml
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: romm
+    spec:
+      containers:
+        - env:
+            - name: DB_HOST
+              value: romm-db
+            - name: DB_NAME
+              value: romm
+            - name: DB_PASSWD
+              value: romm
+            - name: DB_USER
+              value: romm-user
+            - name: IGDB_CLIENT_ID
+              value: ""
+            - name: IGDB_CLIENT_SECRET
+              value: ""
+            - name: ROMM_AUTH_SECRET_KEY
+              value: ""
+          image: rommapp/romm:latest
+          name: romm
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /romm/resources
+              name: romm-claim0
+            - mountPath: /redis-data
+              name: romm-claim1
+            - mountPath: /romm/library
+              name: romm-claim2
+            - mountPath: /romm/assets
+              name: romm-claim3
+            - mountPath: /romm/config
+              name: romm-claim4
+      restartPolicy: Always
+      volumes:
+        - name: romm-claim0
+          hostPath:
+            path: /shared/vms/romm/resources
+        - name: romm-claim1
+          hostPath:
+            path: /shared/vms/romm/db/redis
+        - name: romm-claim2
+          hostPath:
+            path: /shared/vms/romm/library
+        - name: romm-claim3
+          hostPath:
+            path: /shared/vms/romm/assets
+        - name: romm-claim4
+          hostPath:
+            path: /shared/vms/romm/config
