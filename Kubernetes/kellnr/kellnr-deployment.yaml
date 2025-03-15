@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f compose.yml
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: kellnr
+  name: kellnr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: kellnr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f compose.yml
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: kellnr
+    spec:
+      containers:
+        - env:
+            - name: KELLNR_DOCS__ENABLED
+              value: "true"
+            - name: KELLNR_ORIGIN__HOSTNAME
+              value: crates.dax.gay
+            - name: KELLNR_REGISTRY__AUTH_REQUIRED
+              value: "true"
+          image: ghcr.io/kellnr/kellnr:5.3.1
+          name: kellnr
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /opt/kdata
+      restartPolicy: Always
+      volumes:
+        - name: data
+          hostPath:
+            path: /shared/vms/kellnr

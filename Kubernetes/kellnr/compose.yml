@@ -1,0 +1,12 @@
+services:
+  kellnr:
+    image: ghcr.io/kellnr/kellnr:5.3.1
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./kellnr:/opt/kdata
+    environment:
+      - KELLNR_ORIGIN__HOSTNAME=crates.dax.gay
+      - KELLNR_DOCS__ENABLED=true
+      - KELLNR_REGISTRY__AUTH_REQUIRED=true
