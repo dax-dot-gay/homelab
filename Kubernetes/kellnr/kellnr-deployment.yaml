@@ -30,6 +30,10 @@ spec:
               value: crates.dax.gay
             - name: KELLNR_REGISTRY__AUTH_REQUIRED
               value: "true"
+            - name: KELLNR_ORIGIN__PORT
+              value: "443"
+            - name: KELLNR_ORIGIN__PROTOCOL
+              value: https
           image: ghcr.io/kellnr/kellnr:5.3.1
           name: kellnr
           ports:
