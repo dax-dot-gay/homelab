@@ -4,21 +4,20 @@ services:
     image: qmcgaw/gluetun
     cap_add:
       - NET_ADMIN
-    env_file:
-      - .env
     environment:
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=openvpn
-      - OPENVPN_USER=${PROTON_USER}
-      - OPENVPN_PASSWORD=${PROTON_PASS}
+      - OPENVPN_USER=***
+      - OPENVPN_PASSWORD=***
       - SERVER_COUNTRIES=Canada,Switzerland,Iceland,Sweden
       - PORT_FORWARD_ONLY=on
     ports:
-      - 8112:8112 # Deluge
-      - 9696:9696 # Prowlarr
-      - 7878:7878 # Radarr
-      - 8989:8989 # Sonarr
-      - 5055:5055 # Jellyseerr
+      - 8112:8112
+      - 9696:9696
+      - 7878:7878
+      - 8989:8989
+      - 8787:8787
+      - 5055:5055
   deluge:
     image: lscr.io/linuxserver/deluge:latest
     container_name: deluge
@@ -70,6 +69,19 @@ services:
     volumes:
       - /shared/vms/sonarr:/config
       - /shared/nas/media/Shows:/tv #optional
+      - /shared/vms/deluge/downloads:/downloads #optional
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=US/Eastern
+    volumes:
+      - /shared/vms/readarr:/config
+      - /shared/nas/media/Books:/books #optional
       - /shared/vms/deluge/downloads:/downloads #optional
     restart: unless-stopped
     network_mode: "service:gluetun"
